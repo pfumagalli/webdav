@@ -1,5 +1,25 @@
 # A Simple Approach To WebDAV #
 
+> ### Release 0.4 ###
+
+> The 0.4 release of the WebDav servlet is available for [download as a
+> JAR](https://github.com/downloads/pfumagalli/webdav/webdav-0.4.jar)
+> (Sources via [GitHub](https://github.com/pfumagalli/webdav/tags)).
+> 
+> This release is the first one to feature our new package naming `it.could`
+> and provides an experimental way to manage replicated repositories.
+> 
+> Replicated repositories work with a master repository where all your users
+> write to. Every modification made onto this one gets _replicated_ onto a
+> number of different slave repositories (so, add one file, it gets copied
+> on as many servers as you want), and is particularly useful when dealing
+> with a pool of load-balanced servers whose resources must be kept in sync
+> at alltimes.
+> 
+> The documentation is provided as together with the
+> [JavaDoc](http://pfumagalli.github.com/webdav/), and there is an overall
+> page describing the [installation process](http://pfumagalli.github.com/webdav/it/could/webdav/package-summary.html).
+
 In some cases it's really essential to have a small and quick way to access
 files in a web application through the
 [WebDAV](http://www.rfc-editor.org/rfc/rfc2518.txt) protocol.
