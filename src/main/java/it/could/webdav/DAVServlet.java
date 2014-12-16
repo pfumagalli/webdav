@@ -109,9 +109,9 @@ public class DAVServlet implements Servlet, DAVListener {
 
             /* Make sure that we use the correct repository type */
             if ("true".equalsIgnoreCase(config.getInitParameter("xmlOnly"))) {
-                this.repository = new XMLRepository(root);
+                this.repository = new DAVRepository(root, new XMLResource.Factory());
             } else {
-                this.repository = new DAVRepository(root);
+                this.repository = new DAVRepository(root, new DAVResource.Factory());
             }
 
             /* Initialize the processor and register ourselves as listeners */
@@ -129,14 +129,6 @@ public class DAVServlet implements Servlet, DAVListener {
         /* Finally, register this repository in the servlet context */
         final String key = getRepositoryKey(config.getServletName());
         this.context.setAttribute(key, this.repository);
-    }
-
-    /**
-     * <p>Retrieve a {@link DAVRepository} for a given {@link File}.</p>
-     */
-    public DAVRepository getRepository(File root)
-    throws IOException {
-        return new XMLRepository(root);
     }
 
     /**
