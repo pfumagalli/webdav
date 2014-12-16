@@ -276,7 +276,7 @@ public class WebDavClient {
     throws NullPointerException, IOException {
         if (child == null) throw new NullPointerException("Null child");
         if (".".equals(child)) return this.refresh();
-        if ("..".equals(child)) return this.parent();
+        if ("src/main".equals(child)) return this.parent();
         if (resource.collection) {
             Location loc = this.getLocation().resolve(this.getLocation(child));
             return new WebDavClient(loc);
@@ -294,7 +294,7 @@ public class WebDavClient {
      */
     public WebDavClient parent()
     throws IOException {
-        final Location location = this.resource.location.resolve("..");
+        final Location location = this.resource.location.resolve("src/main");
         return new WebDavClient(location);
     }
 
@@ -469,7 +469,7 @@ public class WebDavClient {
                 this.resource = resource;
             } else if (path.size() == 1) {
                 final Path.Element element = (Path.Element) path.get(0);
-                if ("..".equals(element.getName())) continue;
+                if ("src/main".equals(element.getName())) continue;
                 children.put(element.toString(), resource);
             }
         }
