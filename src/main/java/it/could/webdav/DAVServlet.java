@@ -108,11 +108,16 @@ public class DAVServlet implements Servlet, DAVListener {
             }
 
             /* Make sure that we use the correct repository type */
+            DAVResourceFactory factory;
             if ("true".equalsIgnoreCase(config.getInitParameter("xmlOnly"))) {
-                this.repository = new DAVRepository(root, new XMLResource.Factory());
+                factory = new XMLResource.Factory();
+            } else if ("true".equalsIgnoreCase(config.getInitParameter("readOnly"))) {
+                factory = new DAVReadOnlyResource.Factory();
             } else {
-                this.repository = new DAVRepository(root, new DAVResource.Factory());
+                factory = new DAVResource.Factory();
             }
+            this.repository = new DAVRepository(root, factory);
+            logger.debug("Using instances of "+factory.getClass().getEnclosingClass().getSimpleName());
 
             /* Initialize the processor and register ourselves as listeners */
             this.processor = new DAVProcessor(this.repository);

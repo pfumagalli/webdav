@@ -72,6 +72,10 @@
     &lt;param-value&gt;false&lt;/param-value&gt;
   &lt;/init-param&gt;
   &lt;init-param&gt;
+    &lt;param-name&gt;readOnly&lt;/param-name&gt;
+    &lt;param-value&gt;false&lt;/param-value&gt;
+  &lt;/init-param&gt;
+  &lt;init-param&gt;
     &lt;param-name&gt;debugEnabled&lt;/param-name&gt;
     &lt;param-value&gt;false&lt;/param-value&gt;
   &lt;/init-param&gt;
@@ -102,6 +106,12 @@
         before intializing the {@link javax.servlet.ServletContext} as this
         this implementation <i>requires</i> a {@link java.io.File} based
         repository.
+      </dd>
+      <dt>readOnly</dt>
+      <dd>
+        <i>[optional, default=&quot;<code>false</code>&quot;]</i> This parameter
+        will instruct the {@link it.could.webdav.DAVServlet} to return HTTP 403
+        (Forbidden) for any attempt to write back to the repository.
       </dd>
       <dt>xmlOnly</dt>
       <dd>

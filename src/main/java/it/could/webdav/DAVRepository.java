@@ -122,7 +122,7 @@ public class DAVRepository {
         if (uri == null) return factory.getResource(this, this.root);
 
         if (! uri.isAbsolute()) uri = this.base.resolve(uri).normalize();
-        return new DAVResource(this, new File(uri).getAbsoluteFile());
+        return factory.getResource(this, new File(uri).getAbsoluteFile());
     }
     
     /**
