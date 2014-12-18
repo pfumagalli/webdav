@@ -126,7 +126,7 @@ public class Path extends AbstractList implements Encodable {
         final boolean collection =  ((split[split.length - 1] == null)
                                     || (element == null)
                                     || element.getName().equals(".")
-                                    || element.getName().equals(".."));
+                                    || element.getName().equals("src/main"));
 
         /* Setup the last path in our chain and return the first one */
         final Parameters parameters = Parameters.create(params, ';');
@@ -239,7 +239,7 @@ public class Path extends AbstractList implements Encodable {
             /* If this is the "." (current) path element, skip it. */
             if (".".equals(element.getName())) continue;
             /* If this is the ".." (parent) path element, it gets nasty. */
-            if ("..".equals(element.getName())) {
+            if ("src/main".equals(element.getName())) {
                 /* The root path's parent is always itself */
                 if (atroot) continue;
                 /* We're not at root and have the stack, relative ".." */
@@ -250,7 +250,7 @@ public class Path extends AbstractList implements Encodable {
                     /* Get the last element in the stack */
                     final Element prev = (Element) stack.peek();
                     /* If the last element is "..", add another one */
-                    if ("..".equals(prev.getName())) stack.push(element);
+                    if ("src/main".equals(prev.getName())) stack.push(element);
                     /* The last element was not "..", pop it out */
                     else stack.pop();
                     /* If absoulte and stack is empty, we're at root */
@@ -324,7 +324,7 @@ public class Path extends AbstractList implements Encodable {
 
             /* Recreate the path to return by adding ".." and the paths */
             final List elems = new ArrayList();
-            for (int x = skip; x < num; x ++) elems.add(new Element("..", null));
+            for (int x = skip; x < num; x ++) elems.add(new Element("src/main", null));
             elems.addAll(path.subList(skip, path.size()));
             return new Path(elems, false, collection);
         }

@@ -39,31 +39,31 @@ public class DAVRepository {
                                 "_-!.~'()*" +                  // UNRESERVED
                                 ",;:$&+=" +                    // PUNCT
                                 "?/[]@";                       // RESERVED
-
-
     /** <p>The {@link File} identifying the root of this repository.</p> */
-    private File root = null;
+    private final File root;
     /** <p>The {@link URI} associated with the root of this repository.</p> */
-    private URI base = null;
+    private final URI base;
     /** <p>The {@link Set} of all configured {@link DAVListener}s.</p> */
-    private Set listeners = new HashSet();
+    private final Set listeners = new HashSet();
+    /** <p>The {@link DAVResourceFactory} supplying instances of {@link DAVResource}.</p> */
+    private final DAVResourceFactory factory;
 
     /**
      * <p>Create a new {@link DAVRepository} instance.</p>
      *
-     * @param root The {@link File} identifying the root of the repository.
+     * @param root The {@link java.io.File} identifying the root of the repository.
+     * @param factory The {@link DAVResourceFactory} to use.
      * @throws IOException If the specified root is not a directory.
-     * @throws NullPointerExceptoin If the specified root was <b>null</b>.
+     * @throws NullPointerException If the specified root was <b>null</b>.
      */
-    public DAVRepository(File root)
+    public DAVRepository(File root, DAVResourceFactory factory)
     throws IOException {
         if (root == null) throw new NullPointerException("Null root");
-        if (root.isDirectory()) {
-            this.root = root.getCanonicalFile();
-            this.base = this.root.toURI().normalize();
-        } else {
-            throw new IOException("Root \"" + root + "\" is not a directory");
-        }
+        if (!root.isDirectory()) throw new IOException("Root \"" + root + "\" is not a directory");
+
+        this.factory = factory;
+        this.root = root.getCanonicalFile();
+        this.base = this.root.toURI().normalize();
     }
 
     /**
@@ -119,10 +119,10 @@ public class DAVRepository {
      */
     public DAVResource getResource(URI uri)
     throws IOException {
-        if (uri == null) return new DAVResource(this, this.root);
+        if (uri == null) return factory.getResource(this, this.root);
 
         if (! uri.isAbsolute()) uri = this.base.resolve(uri).normalize();
-        return new DAVResource(this, new File(uri).getAbsoluteFile());
+        return factory.getResource(this, new File(uri).getAbsoluteFile());
     }
     
     /**

@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-
 /**
  * <p>A simple representation of a WebDAV resource based on {@link File}s.</p> 
  *
@@ -467,4 +466,12 @@ public class DAVResource implements Comparable {
             throw new DAVException(403, "Parent not a collection", this);
         return new DAVOutputStream(this);
     }
+
+    public static class Factory implements DAVResourceFactory {
+        @Override
+        public DAVResource getResource(DAVRepository repo, File file) {
+            return new DAVResource(repo,file);
+        }
+    }
+
 }

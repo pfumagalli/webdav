@@ -16,68 +16,43 @@
  * ========================================================================== */
 package it.could.webdav;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
+import java.io.File;
+import java.io.IOException;
 
 /**
- * <p>A {@link DAVRepository} instance enforcing all {@link DAVResource}s to
- * be XML files.</p> 
+ * <p>A {@link DAVResource} supporting only XML files.</p>
  *
  * @author <a href="http://could.it/">Pier Fumagalli</a>
  */
-public class XMLRepository extends DAVRepository {
+public class XMLResource extends DAVResource {
 
     /**
-     * <p>Create a new {@link XMLRepository} instance.</p>
+     * <p>Create a new {@link DAVResource} instance.</p>
      */
-    public XMLRepository(File root)
-    throws IOException {
-        super(root);
+    protected XMLResource(DAVRepository repo, File file) {
+        super(repo, file);
     }
 
     /**
-     * <p>Return the {@link DAVResource} associated with a {@link URI}.</p>
+     * <p>Override the MIME Content-Type to <code>text/xml</code> for
+     * normal resources.</p>
      */
-    public DAVResource getResource(URI uri)
-    throws IOException {
-        return new XMLResource(this, super.getResource(uri));
+    public String getContentType() {
+        if (this.isResource()) return "text/xml";
+        return super.getContentType();
     }
-    
+
     /**
-     * <p>A simple {@link DAVResource} extension enforcing XML writes.</p>
+     * <p>Return a {@link DAVOutputStream} enforcing XML formatted data.</p>
      */
-    private static final class XMLResource extends DAVResource {
-
-        /**
-         * <p>Create a new {@link XMLResource} instance.</p>
-         */
-        public XMLResource(XMLRepository repository, DAVResource resource) {
-            super(repository, resource.getFile());
-        }
-
-        /**
-         * <p>Override the MIME Content-Type to <code>text/xml</code> for
-         * normal resources.</p>
-         */
-        public String getContentType() {
-            if (this.isResource()) return "text/xml";
-            return super.getContentType();
-        }
-        
-        /**
-         * <p>Return a {@link DAVOutputStream} enforcing XML formatted data.</p>
-         */
-        public DAVOutputStream write() {
-            return new XMLOutputStream(this);
-        }
+    public DAVOutputStream write() {
+        return new XMLOutputStream(this);
     }
 
     /**
@@ -96,7 +71,7 @@ public class XMLRepository extends DAVRepository {
          * <p>Ensure that whatever is in the temporary file is XML.</p>
          */
         protected void rename(File temporary, File original)
-        throws IOException {
+                throws IOException {
             try {
                 SAXParserFactory factory = SAXParserFactory.newInstance();
                 factory.setNamespaceAware(true);
@@ -111,4 +86,18 @@ public class XMLRepository extends DAVRepository {
             }
         }
     }
+
+    /**
+     * <p>A {@link DAVResourceFactory} instance enforcing all {@link DAVResource}s to
+     * be XML files.</p>
+     *
+     * @author <a href="http://could.it/">Pier Fumagalli</a>
+     */
+    public static class Factory implements DAVResourceFactory {
+        @Override
+        public DAVResource getResource(DAVRepository repo, File file) {
+            return new XMLResource(repo,file);
+        }
+    }
+
 }
